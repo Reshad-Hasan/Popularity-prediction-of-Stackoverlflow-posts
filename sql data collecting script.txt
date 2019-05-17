@@ -1,0 +1,21 @@
+select top 100
+    posts.title,
+    posts.body,
+    posts.tags,
+    users.reputation,
+    posts.answerCount,
+    posts.commentCount,
+    posts.score,
+    popularityValue=posts.answerCount+posts.commentCount+posts.score
+from posts
+join users on posts.ownerUserId=users.id
+where 
+  (
+    posts.score is not null
+    and 
+    posts.answerCount is not null
+    and 
+    posts.commentCount is not null
+    and 
+    users.reputation is not null
+  )
