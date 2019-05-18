@@ -1,7 +1,7 @@
 select top 100
     posts.title,
     posts.body,
-    posts.tags,
+    tagCount=len(tags)-len(replace(tags,'>','')),
     users.reputation,
     posts.answerCount,
     posts.commentCount,
