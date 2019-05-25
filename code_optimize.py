@@ -5,7 +5,7 @@ feature_keys=['titleLen','bodyToTitle','userRep','codeLen','codeToBody','stopWor
 
 post_columns=['title','body','tagCount','reputation','popularity']
 
-processed_data_path= 'C:\\Users\\Reshad Hasan\\Desktop\\processed_data.csv'
+processed_data_path= 'C:\\Users\\Reshad Hasan\\Desktop\\processed_data-50000.csv'
 
 csv_reading_path='C:\\Users\\Reshad Hasan\\Desktop\\temp.csv'
 
