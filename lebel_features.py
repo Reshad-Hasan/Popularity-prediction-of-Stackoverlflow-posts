@@ -3,16 +3,6 @@ import csv
 import time
 from operator import itemgetter
 
-def read_file():
-    extractedFeatureList = []
-    with open(CO.processed_data_path,'r',encoding=CO.ENCODING) as file:
-        csv_reader = csv.DictReader(file, delimiter=',')
-        for row in csv_reader:
-            for k in row.keys():
-                row[k]=float(row[k])
-            extractedFeatureList.append(row)
-    return extractedFeatureList
-
 
 def print_list(l):
     for i in l:
@@ -21,13 +11,13 @@ def print_list(l):
     print()
 if __name__=='__main__':
     start=time.time()
-    exFeatureList=read_file()
+    exFeatureList=CO.readcsv_file(CO.processed_data_path)
     sample_count=len(exFeatureList)
     samplePerLabel=sample_count//5
     print(sample_count)
     for k in CO.feature_keys:
         exFeatureList=sorted(exFeatureList,key=lambda i:i[k])
-        label=0
+        label=-1
         for i in range(sample_count):
             if i%samplePerLabel==0:
                 label+=1
