@@ -1,31 +1,32 @@
-import code_optimize as CO
+import code_optimize as co
 import csv
 import time
-from operator import itemgetter
 
 
 def print_list(l):
-    for i in l:
-        print(i)
+    for j in l:
+        print(j)
     print()
     print()
-if __name__=='__main__':
-    start=time.time()
-    exFeatureList=CO.readcsv_file(CO.processed_data_path)
-    sample_count=len(exFeatureList)
-    samplePerLabel=sample_count//5
+
+
+if __name__ == '__main__':
+    start = time.time()
+    exFeatureList = co.readcsv_file(co.processed_data_path)
+    sample_count = len(exFeatureList)
+    samplePerLabel = sample_count // 5
     print(sample_count)
-    for k in CO.feature_keys:
-        exFeatureList=sorted(exFeatureList,key=lambda i:i[k])
-        label=-1
+    for k in co.feature_keys:
+        exFeatureList = sorted(exFeatureList, key=lambda d: d[k])
+        label = -1
         for i in range(sample_count):
-            if i%samplePerLabel==0:
-                label+=1
-            exFeatureList[i][k]=label
-    with open(CO.labeled_data_path,mode='w',encoding=CO.ENCODING) as write_file:
-        writer=csv.DictWriter(write_file,fieldnames=CO.feature_keys)
+            if i % samplePerLabel == 0:
+                label += 1
+            exFeatureList[i][k] = label
+    with open(co.labeled_data_path, mode='w', encoding=co.ENCODING) as write_file:
+        writer = csv.DictWriter(write_file, fieldnames=co.feature_keys)
         writer.writeheader()
         for row in exFeatureList:
             writer.writerow(row)
-    end=time.time()
-    print(end-start)
+    end = time.time()
+    print(end - start)

@@ -5,7 +5,7 @@ import code_optimize
 
 
 class title:
-    titleLen = 0
+    titleLen: int = 0
 
     def set_title(self, data):
         self.titleLen = len(data)
@@ -54,7 +54,7 @@ class body:
                     self.upCase += 1
             i += 1
         self.count_stop_non_stop_word()
-        self.calPolaritySubjectivity()
+        self.cal_pol_sub()
 
     def count_stop_non_stop_word(self):
         stopWords = set(stopwords.words('english'))
@@ -94,7 +94,7 @@ class body:
     def getSubjectividy(self):
         return self.subjectivity
 
-    def calPolaritySubjectivity(self):
+    def cal_pol_sub(self):
         text = TextBlob(self.data)
 
         self.polarity, self.subjectivity = text.sentiment
@@ -111,7 +111,7 @@ class feature(title, body):
         self.set_body(post['body'])
         self.set_title(post['title'])
 
-    def extractFeatures(self):
+    def extract_features(self):
         self.featureDict['titleLen'] = self.get_title_len()
         self.featureDict['bodyToTitle'] = self.getBodyLen() // self.get_title_len()
         self.featureDict['userRep'] = self.post['reputation']
@@ -130,13 +130,23 @@ class feature(title, body):
         self.featureDict['popularity'] = self.post['popularity']
 
     def getFeatures(self):
-        self.extractFeatures()
+        self.extract_features()
         return self.featureDict
 
 
 post = {
     'title': '12345',
-    'body': "<p>There are some Erlang constructs I would want to use inside Elixir code. One is Erlang list comprehensions.</p><p>My general question is whether there is some way to 'drop down' to writing Erlang code while coding in Elixir (sort of the way you see people embed C in Ruby or TCL or whatever).  My specific question (related to the general) is whether it is possible for me to somehow get Erlang-style list comprehensions while coding in Elixir.</p><p>If this isn't possible with plain Elixir, perhaps it can be done through a macro (possibly difficult?)?  I do understand that I can just write an Erlang module and call it from Elixir, but that's not quite what I'm looking for.</p>'",
+    'body': "<p>There are some Erlang constructs I would want to u" +
+            "se inside Elixir code. One is Erlang list comprehensions." +
+            "</p><p>My general question is whether there is some way to " +
+            "'drop down' to writing Erlang code while coding in Elixir " +
+            "(sort of the way you see people embed C in Ruby or TCL or whatever)." +
+            "  My specific question (related to the general) is whether it is " +
+            "possible for me to somehow get Erlang-style list comprehensions while" +
+            " coding in Elixir.</p><p>If this isn't possible with plain Elixir," +
+            " perhaps it can be done through a macro (possibly difficult?)?  " +
+            "I do understand that I can just write an Erlang module and call it " +
+            "from Elixir, but that's not quite what I'm looking for.</p>'",
     'tagCount': 2,
     'reputation': 4,
     'popularity': 10
