@@ -1,14 +1,16 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from textblob import TextBlob
+import code_optimize
+
 
 class title:
-    titleLen = 0
+    titleLen: int = 0
 
-    def setTitle(self, data):
+    def set_title(self, data):
         self.titleLen = len(data)
 
-    def getTitleLen(self):
+    def get_title_len(self):
         return self.titleLen
 
 
@@ -17,39 +19,44 @@ class body:
     stopWordCount, nonStopWordCount = 0, 0
     polarity = 0
     subjectivity = 0
-    data=''
-    def setBody(self, data):
+    data = ''
+
+    def set_body(self, data):
         self.data = data
         self.wordTokens = word_tokenize(data)
-        self.processBody()
+        self.process_body()
 
-    def processBody(self):
+    def process_body(self):
         cb = False
-        for i in range(0, len(self.data)):
+        i = 0
+        while i < len(self.data):
             if self.data[i] == '<':
-                if self.data[i:3] == '<p>':
+                token = self.data[i] + self.data[i + 1] + self.data[i + 2]
+                if token == "<p>":
                     self.para += 1
-                elif self.data[i:3] == '<co':
+                elif token == "<co":
                     self.codeBlock += 1
                     cb = True
-                elif self.data[i:3] == '</c':
+                elif token == "</c":
                     cb = False
-                while self.data[i]!='>':
-                    i+=1
+                while self.data[i] != '>':
+                    i += 1
                     if cb:
-                        self.codeLen+=1
+                        self.codeLen += 1
+                i += 1
             if cb:
                 self.codeLen += 1
             else:
                 self.bodyLen += 1
                 if self.data[i].islower():
-                    self.lowCase+=1
+                    self.lowCase += 1
                 elif self.data[i].isupper():
-                    self.upCase+=1
-        self.countStopNonStopWord()
-        self.calPolaritySubjectivity()
+                    self.upCase += 1
+            i += 1
+        self.count_stop_non_stop_word()
+        self.cal_pol_sub()
 
-    def countStopNonStopWord(self):
+    def count_stop_non_stop_word(self):
         stopWords = set(stopwords.words('english'))
         for w in self.wordTokens:
             if w in stopWords:
@@ -57,7 +64,7 @@ class body:
             else:
                 self.nonStopWordCount += 1
 
-    def getCodeLen(self):
+    def get_code_len(self):
         return self.codeLen
 
     def getUpCase(self):
@@ -87,45 +94,30 @@ class body:
     def getSubjectividy(self):
         return self.subjectivity
 
-    def calPolaritySubjectivity(self):
-        text=TextBlob(self.data)
+    def cal_pol_sub(self):
+        text = TextBlob(self.data)
 
         self.polarity, self.subjectivity = text.sentiment
-        a,b=self.polarity,self.subjectivity
+        a, b = self.polarity, self.subjectivity
         a, b = text.sentiment
-        c=10
+        c = 10
 
 
 class feature(title, body):
-    featureDict = {
-        'titleLen': 0,
-        'bodyToTitle': 0,
-        'userRep': 0,
-        'codeLen': 0,
-        'codeToBody': 0,
-        'stopWordCount': 0,
-        'nonStopWordCount': 0,
-        'bodyLen': 0,
-        'codBlockCount': 0,
-        'polarity': 0,
-        'subjectivity': 0,
-        'paraCount': 0,
-        'tagCount': 0,
-        'lowToUp': 0,
-        'popularity': 0
-    }
+    featureDict = dict((i, None) for i in code_optimize.feature_keys)
 
     def __init__(self, post):
         self.post = post
-        self.setBody(post['body'])
-        self.setTitle(post['title'])
+        self.set_body(post['body'])
+        self.set_title(post['title'])
 
-    def extractFeatures(self):
-        self.featureDict['titleLen'] = self.getTitleLen()
-        self.featureDict['bodyToTitle'] = self.getBodyLen() // self.getTitleLen()
+    def extract_features(self):
+        self.featureDict['titleLen'] = self.get_title_len()
+        self.featureDict['bodyToTitle'] = self.getBodyLen() // self.get_title_len()
         self.featureDict['userRep'] = self.post['reputation']
-        self.featureDict['codeLen'] = self.getCodeLen()
-        self.featureDict['codeToBody'] = self.getCodeLen() if self.getCodeLen()>0 else 1 // self.getBodyLen() if self.getBodyLen()>0  else 1
+        self.featureDict['codeLen'] = self.get_code_len()
+        self.featureDict['codeToBody'] = (self.get_code_len() if self.get_code_len() > 0 else 1) // \
+                                         (self.getBodyLen() if self.getBodyLen() > 0 else 1)
         self.featureDict['stopWordCount'] = self.getStopWordCount()
         self.featureDict['nonStopWordCount'] = self.getNonStopWordCount()
         self.featureDict['bodyLen'] = self.getBodyLen()
@@ -134,27 +126,48 @@ class feature(title, body):
         self.featureDict['subjectivity'] = self.getSubjectividy()
         self.featureDict['paraCount'] = self.getParaCount()
         self.featureDict['tagCount'] = self.post['tagCount']
-        self.featureDict['lowToUp'] = self.getLowCase() // self.getUpCase() if self.getUpCase()>0 else 1
+        self.featureDict['lowToUp'] = self.getLowCase() // self.getUpCase() if self.getUpCase() > 0 else 1
         self.featureDict['popularity'] = self.post['popularity']
 
     def getFeatures(self):
-        self.extractFeatures()
+        self.extract_features()
         return self.featureDict
 
 
 post = {
     'title': '12345',
-    'body': "<p>There are some Erlang constructs I would want to use inside Elixir code. One is Erlang list comprehensions.</p><p>My general question is whether there is some way to 'drop down' to writing Erlang code while coding in Elixir (sort of the way you see people embed C in Ruby or TCL or whatever).  My specific question (related to the general) is whether it is possible for me to somehow get Erlang-style list comprehensions while coding in Elixir.</p><p>If this isn't possible with plain Elixir, perhaps it can be done through a macro (possibly difficult?)?  I do understand that I can just write an Erlang module and call it from Elixir, but that's not quite what I'm looking for.</p>'",
+    'body': "<p>There are some Erlang constructs I would want to u" +
+            "se inside Elixir code. One is Erlang list comprehensions." +
+            "</p><p>My general question is whether there is some way to " +
+            "'drop down' to writing Erlang code while coding in Elixir " +
+            "(sort of the way you see people embed C in Ruby or TCL or whatever)." +
+            "  My specific question (related to the general) is whether it is " +
+            "possible for me to somehow get Erlang-style list comprehensions while" +
+            " coding in Elixir.</p><p>If this isn't possible with plain Elixir," +
+            " perhaps it can be done through a macro (possibly difficult?)?  " +
+            "I do understand that I can just write an Erlang module and call it " +
+            "from Elixir, but that's not quite what I'm looking for.</p>'",
     'tagCount': 2,
     'reputation': 4,
     'popularity': 10
 }
 
-if __name__=='__main__':
+if __name__ == '__main__':
     obj = feature(post)
     print(obj.getFeatures())
 
-    text=TextBlob("<p>There are some Erlang constructs I would want to use inside Elixir code. One is Erlang list comprehensions.</p><p>My general question is whether there is some way to 'drop down' to writing Erlang code while coding in Elixir (sort of the way you see people embed C in Ruby or TCL or whatever).  My specific question (related to the general) is whether it is possible for me to somehow get Erlang-style list comprehensions while coding in Elixir.</p><p>If this isn't possible with plain Elixir, perhaps it can be done through a macro (possibly difficult?)?  I do understand that I can just write an Erlang module and call it from Elixir, but that's not quite what I'm looking for.</p>'")
+    text = TextBlob("<p>There are some Erlang constructs I would want to u" +
+                    "se inside Elixir code. One is Erlang list comprehensions." +
+                    "</p><p>My general question is whether there is some way to " +
+                    "'drop down' to writing Erlang code while coding in Elixir " +
+                    "(sort of the way you see people embed C in Ruby or TCL or whatever)." +
+                    "  My specific question (related to the general) is whether it is " +
+                    "possible for me to somehow get Erlang-style list comprehensions while" +
+                    " coding in Elixir.</p><p>If this isn't possible with plain Elixir," +
+                    " perhaps it can be done through a macro (possibly difficult?)?  " +
+                    "I do understand that I can just write an Erlang module and call it " +
+                    "from Elixir, but that's not quite what I'm looking for.</p>'"
+                    )
     print(text.sentiment)
-    a,b=text.sentiment
-    print(a,b)
+    a, b = text.sentiment
+    print(a, b)
