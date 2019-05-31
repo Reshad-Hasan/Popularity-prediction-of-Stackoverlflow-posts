@@ -7,15 +7,19 @@ feature_keys = ['titleLen', 'bodyToTitle', 'userRep', 'codeLen', 'codeToBody', '
 
 post_columns = ['title', 'body', 'tagCount', 'reputation', 'popularity']
 
-processed_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\processed_data-50000.csv'
+processed_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\processed_data.csv'
 
 csv_reading_path = 'C:\\Users\\Reshad Hasan\\Desktop\\data-50000.csv'
 
 ENCODING = 'utf-8'
 
-labeled_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\labeled_data-50000.csv'
+labeled_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\labeled_data.csv'
 
-frequency_table_path = 'C:\\Users\\Reshad Hasan\\Desktop\\frequency   -50000.csv'
+frequency_table_path = 'C:\\Users\\Reshad Hasan\\Desktop\\frequency-50000.csv'
+
+test_file_path='C:\\Users\\Reshad Hasan\\Desktop\\frequency   -50000.csv'
+
+train_file_path=''
 
 
 def readcsv_file(file_path):
