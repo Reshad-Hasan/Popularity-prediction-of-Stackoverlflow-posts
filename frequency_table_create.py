@@ -1,13 +1,15 @@
 import code_optimize as co
 
 
-class frequency_table:
+class frequency_table_class:
     fre_table = dict((i, [[0] * 5 for j in range(5)]) for i in co.feature_keys)
 
     def create(self):
-        labeled_data_list = co.readcsv_file(co.labeled_data_path)
+        labeled_data_list = co.readcsv_file('train.csv')
         for row in labeled_data_list:
             for k in row.keys():
+                if int(row[k]==5):
+                    pass
                 self.fre_table[k][int(row[k])][int(row['popularity'])] += 1
 
     def write(self):
@@ -28,14 +30,15 @@ class frequency_table:
                         index += 1
 
     def printfre(self):
-        for i in self.fre_table.items():
-            print(i)
+        for k in self.fre_table.keys():
+            print(k)
+            for row in self.fre_table[k]:
+                print(row)
 
 
 if __name__ == '__main__':
-    fretab = frequency_table()
+    fretab = frequency_table_class()
     fretab.create()
-    fretab.printfre()
     fretab.write()
     fretab.read()
     print()

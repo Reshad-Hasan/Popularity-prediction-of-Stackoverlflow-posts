@@ -1,7 +1,7 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from textblob import TextBlob
-import code_optimize
+import code_optimize as CO
 
 
 class title:
@@ -103,17 +103,22 @@ class body:
         c = 10
 
 
+
 class feature(title, body):
-    featureDict = dict((i, None) for i in code_optimize.feature_keys)
+    featureDict = dict((i, 0.0) for i in CO.feature_keys)
 
     def __init__(self, post):
         self.post = post
         self.set_body(post['body'])
         self.set_title(post['title'])
-
+    def getTagCount(self):
+        if self.post['tagCount'] in '':
+            return 0
+        return self.post['tagCount']
     def extract_features(self):
         self.featureDict['titleLen'] = self.get_title_len()
-        self.featureDict['bodyToTitle'] = self.getBodyLen() // self.get_title_len()
+        self.featureDict['bodyToTitle'] = self.getBodyLen() //\
+                                          (self.get_title_len() if self.get_title_len() > 0 else 1)
         self.featureDict['userRep'] = self.post['reputation']
         self.featureDict['codeLen'] = self.get_code_len()
         self.featureDict['codeToBody'] = (self.get_code_len() if self.get_code_len() > 0 else 1) // \
@@ -125,13 +130,16 @@ class feature(title, body):
         self.featureDict['polarity'] = self.getPolarty()
         self.featureDict['subjectivity'] = self.getSubjectividy()
         self.featureDict['paraCount'] = self.getParaCount()
-        self.featureDict['tagCount'] = self.post['tagCount']
+        self.featureDict['tagCount'] = self.getTagCount()
         self.featureDict['lowToUp'] = self.getLowCase() // self.getUpCase() if self.getUpCase() > 0 else 1
         self.featureDict['popularity'] = self.post['popularity']
 
     def getFeatures(self):
         self.extract_features()
-        return self.featureDict
+        neededFeatures={}
+        for k in CO.feature_keys:
+            neededFeatures[k]=self.featureDict[k]
+        return neededFeatures
 
 
 post = {
