@@ -7,9 +7,9 @@ import control
 class post:
     item = dict((i, 0) for i in control.post_columns)
 
-    def __init__(self, item):
-        self.item = item
-        obj = feature(item)
+    def __init__(self, post_data):
+        self.item = post_data
+        obj = feature(post_data)
         self.exFeatures = obj.get_features()
 
     def get_features(self):
@@ -17,7 +17,6 @@ class post:
 
 
 if __name__ == '__main__':
-    count = 0
     with open(control.processed_data_path, mode='w', encoding=control.ENCODING) as write_file:
         writer = csv.DictWriter(write_file, fieldnames=control.feature_keys)
         writer.writeheader()
@@ -27,8 +26,7 @@ if __name__ == '__main__':
             # each questions is processed and then written to processed data file
             for row in csv_reader:
                 postObj = post(row)
-                exFeatures = postObj.get_features()
+                exFeatures = postObj.get_features()  # feature extraction
                 writer.writerow(exFeatures)
                 line_count += 1
-                print(line_count)
-    print(count)
+                print(line_count, 'sample processed')

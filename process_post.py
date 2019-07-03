@@ -8,7 +8,12 @@ class title:
     titleLen: int = 0
 
     def set_title(self, data):
-        self.titleLen = len(data)
+        count = 0
+        for i in data:
+            if i == ' ':
+                continue
+            count += 1
+        self.titleLen = count
 
     def get_title_len(self):
         return self.titleLen
@@ -31,12 +36,11 @@ class body:
     # process the body to extract features
     def process_body(self):
         cb = False
-        i = 0
         # <p> in paragraph token
         # <code> in code token
         # </code> end of code segment
         # using this token para_count,code_block_count is calculated
-        while i < len(self.data):
+        for i in range(len(self.data)):
             if self.data[i] == '<':
                 token = self.data[i] + self.data[i + 1] + self.data[i + 2]
                 if token == "<p>":
@@ -51,6 +55,8 @@ class body:
                     if cb:
                         self.codeLen += 1
                 i += 1
+            if i >= len(self.data):
+                break
             if cb:
                 self.codeLen += 1
             else:
@@ -63,7 +69,7 @@ class body:
         self.count_stop_non_stop_word()
         self.cal_pol_sub()
 
-    # count stop words and non stop words using nltk package
+    # right_ans stop words and non stop words using nltk package
     def count_stop_non_stop_word(self):
         stop_words = set(stopwords.words('english'))
         for w in self.word_tokens:
@@ -166,7 +172,7 @@ post = {
             "possible for me to somehow get Erlang-style list comprehensions while" +
             " coding in Elixir.</p><p>If this isn't possible with plain Elixir," +
             " perhaps it can be done through a macro (possibly difficult?)?  " +
-            "I do understand that I can just write an Erlang module and call it " +
+            "I do understand that I can just write_data an Erlang module and call it " +
             "from Elixir, but that's not quite what I'm looking for.</p>'",
     'tagCount': 2,
     'reputation': 4,
