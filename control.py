@@ -1,19 +1,19 @@
 import csv
 
+# extracted features list
 feature_keys = ['titleLen', 'bodyToTitle', 'userRep', 'codeLen', 'codeToBody', 'stopWordCount',
                 'nonStopWordCount', 'bodyLen', 'codeBlockCount', 'polarity', 'subjectivity',
                 'paraCount', 'tagCount', 'popularity'
                 ]
 
+temp = ['titleLen', 'bodyToTitle', 'userRep', 'codeLen', 'codeToBody', 'stopWordCount',
+        'nonStopWordCount', 'bodyLen', 'codeBlockCount', 'polarity', 'subjectivity',
+        'paraCount', 'tagCount', 'lowToUp', 'popularity'
+        ]
 
-temp=['titleLen', 'bodyToTitle', 'userRep', 'codeLen', 'codeToBody', 'stopWordCount',
-                'nonStopWordCount', 'bodyLen', 'codeBlockCount', 'polarity', 'subjectivity',
-                'paraCount', 'tagCount', 'lowToUp', 'popularity'
-                ]
+popularity_numberof_labels = 2
 
-popularity_numberof_labels=5
-
-
+# initial data-set columns
 post_columns = ['title', 'body', 'tagCount', 'reputation', 'popularity']
 
 processed_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\processed_data_all.csv'
@@ -26,10 +26,10 @@ labeled_data_path = 'C:\\Users\\Reshad Hasan\\Desktop\\labeled_data_50000.csv'
 
 frequency_table_path = 'C:\\Users\\Reshad Hasan\\Desktop\\frequency_50000.csv'
 
-labeled_data_path_test='C:\\Users\\Reshad Hasan\\Desktop\\labeled_data_test.csv'
+labeled_data_path_test = 'C:\\Users\\Reshad Hasan\\Desktop\\labeled_data_test.csv'
 
-train_file_path=''
 
+# for reading csv as list
 def readcsv_file(file_path):
     ex_feature_list = []
     with open(file_path, 'r', encoding=ENCODING) as file:
