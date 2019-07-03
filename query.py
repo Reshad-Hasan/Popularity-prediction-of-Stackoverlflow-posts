@@ -33,10 +33,10 @@ def take_input():
 ques = take_input()
 obj = feature(ques)  # extracting features
 f = obj.get_features()  # returns features dictionary
+print(" ** feature values **")
+print(f)
 label = label_data()
 f = label.label_post(f)  # labeling features according to data boundaries
-print('group values for each attribute')
-print(f)
 nb = naive_bayes()
 nb.read_table()  # reading frequency table essential for naive bayes algorithm
 result, probability = nb.get_result(f)
