@@ -1,4 +1,4 @@
-select top 100000
+select top 10000000000000000
     posts.title,
     posts.body,
     tagCount=len(tags)-len(replace(tags,'>','')),
